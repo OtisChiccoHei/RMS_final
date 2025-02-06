@@ -18,7 +18,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasAvatar, HasName, HasMedia
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasMedia
 {
     use InteractsWithMedia;
     use HasUuids, HasRoles;
@@ -35,6 +35,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'firstname',
         'lastname',
         'password',
+        'division',
     ];
 
     /**

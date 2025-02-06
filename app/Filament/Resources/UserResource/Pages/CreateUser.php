@@ -31,8 +31,8 @@ class CreateUser extends CreateRecord
         }
 
         if ($settings->isMailSettingsConfigured()) {
-            $notification = new VerifyEmail();
-            $notification->url = Filament::getVerifyEmailUrl($user);
+          //  $notification = new VerifyEmail();
+          //  $notification->url = Filament::getVerifyEmailUrl($user);
 
             $settings->loadMailSettingsToConfig();
 

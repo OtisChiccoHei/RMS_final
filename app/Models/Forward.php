@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Log extends Model
+class Forward extends Model
 {
     use HasFactory;
     protected $fillable = [
         'id',
-        'docId',
-        'transaction',
         'sender',
         'receiver',
-    ];    
+        'documentId',
+        'status',
+    ];
 }

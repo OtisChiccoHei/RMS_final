@@ -43,6 +43,6 @@ class Document extends Model
         'finalDraft',
         'signedCopy',
         'holder',
-        'description'
+        'description',
     ];    
 }

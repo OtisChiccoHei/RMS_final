@@ -18,9 +18,10 @@ class DocumentObserver
     }
     public function creating(Document $document): void
     {
+        $meow=Auth::user()->division;
         $uuid = Uuid::uuid4()->toString();
-        $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
-        $uuid = 'document-' . substr($uuid, 0, 12) . '-' . $microseconds;
+        $microseconds = substr(explode('.', microtime(true))[1], 0, 99);
+        $uuid = $meow . '-'. date("Y") . '-' . $microseconds;
         $document->status = 'Active';
         $document->holder = Auth::user()->id;
         $document->id = $uuid;

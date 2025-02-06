@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('logs', function (Blueprint $table) {
+        Schema::create('forwards', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('docId')->nullable();            
-            $table->string('transaction')->nullable();
             $table->string('sender')->nullable();
+            $table->string('documentId')->nullable();
             $table->string('receiver')->nullable();
-            $table->string('holder')->nullable();
-
+            $table->string('status')->nullable();
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs');
+        Schema::dropIfExists('forwards');
     }
 };
