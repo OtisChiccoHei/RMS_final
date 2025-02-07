@@ -88,8 +88,8 @@ class DocumentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('Id')
+                Tables\Columns\TextColumn::make('rmsid')
+                    ->label('RMS ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Subject')
@@ -120,7 +120,6 @@ class DocumentResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ProductExporter::class(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

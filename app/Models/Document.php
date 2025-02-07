@@ -31,11 +31,10 @@ class Document extends Model
      */
 
      protected $primaryKey = 'id';
-     public $incrementing = false;
-     protected $keyType = 'string';
- 
+     public $incrementing = true;
+    
     protected $fillable = [
-        'id',
+        'rmsid',
         'subject',
         'status',
         'docType',

@@ -24,11 +24,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     use HasUuids, HasRoles;
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+
     protected $fillable = [
         'username',
         'email',

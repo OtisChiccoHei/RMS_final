@@ -14,17 +14,17 @@ class DocumentObserver
      */
     public function created(Document $document): void
     {
-        //
+        $meow=Auth::user()->division;
+        $uuid = Uuid::uuid4()->toString();
+        $uuid = $meow . '-'. date("Y") . '-' . str_pad($document->id, 6, '0', STR_PAD_LEFT);
+        $document->status = 'Active';
+        $document->holder = Auth::user()->id;
+        $document->rmsid = $uuid;
+        $document->save();
     }
     public function creating(Document $document): void
     {
-        $meow=Auth::user()->division;
-        $uuid = Uuid::uuid4()->toString();
-        $microseconds = substr(explode('.', microtime(true))[1], 0, 99);
-        $uuid = $meow . '-'. date("Y") . '-' . $microseconds;
-        $document->status = 'Active';
-        $document->holder = Auth::user()->id;
-        $document->id = $uuid;
+        //
     }
     /**
      * Handle the Document "updated" event.
