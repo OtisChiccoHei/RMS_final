@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LogResource\Pages;
 use App\Filament\Resources\LogResource\RelationManagers;
 use App\Models\Log;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -43,6 +44,32 @@ class LogResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('docId')
+                    ->searchable()
+                    ->label('Id'),
+                Tables\Columns\TextColumn::make('transaction')
+                    ->searchable()
+                    ->label('Transaction Type'),
+                Tables\Columns\TextColumn::make('sender')
+                    ->searchable()
+                    ->label('Sent by')
+                    ->formatStateUsing(
+                        function(?string $state){
+                            return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
+                        }
+                    ),
+                Tables\Columns\TextColumn::make('receiver')
+                    ->searchable()
+                    ->formatStateUsing(
+                        function(?string $state){
+                            return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
+                        }
+                    )
+                    ->label('Received by'),
+                Tables\Columns\TextColumn::make('status')
+                    ->searchable()
+                    ->label('Status'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -51,31 +78,19 @@ class LogResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('docId')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('transaction')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('sender')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('dateTime')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('receiver')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

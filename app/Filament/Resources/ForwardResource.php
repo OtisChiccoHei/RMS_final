@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ForwardResource\Pages;
 use App\Filament\Resources\ForwardResource\RelationManagers;
 use App\Models\Forward;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,10 +48,20 @@ class ForwardResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('sender')
+                ->formatStateUsing(
+                    function(?string $state){
+                        return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
+                    }
+                )
                     ->searchable(),
                 Tables\Columns\TextColumn::make('documentId')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('receiver')
+                ->formatStateUsing(
+                    function(?string $state){
+                        return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
+                    }
+                )
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),

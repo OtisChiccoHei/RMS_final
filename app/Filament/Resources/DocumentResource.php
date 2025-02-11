@@ -5,6 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource\RelationManagers;
 use App\Models\Document;
+use App\Models\User;
+use App\Models\Forward;
+use App\Models\Log;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,6 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
+use Filament\Tables\Actions\Action;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+use Illuminate\Support\Facades\Auth;
+
 
 class DocumentResource extends Resource
 {
@@ -101,6 +109,11 @@ class DocumentResource extends Resource
                     ->label('Document Type'),
                 Tables\Columns\TextColumn::make('holder')
                     ->label('Current Holder')
+                    ->formatStateUsing(
+                        function(?string $state){
+                            return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
+                        }
+                    )
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status'),
@@ -120,6 +133,39 @@ class DocumentResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
+                Action::make('Forward')
+                    ->form([
+                        Select::make('User')
+                            ->label('Recipient')
+                            ->options(User::query()->pluck('username', 'id'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Document $record): void {
+                        $uuid = Uuid::uuid4()->toString();
+                        $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
+                        $uuid = 'sent-' . substr($uuid, 0, 12) . '-' . $microseconds;
+                        $temp= Forward::create([
+                            'id'=> $uuid,
+                            'sender'=> Auth::user()->id,
+                            'receiver'=> $data['User'],
+                            'documentId' => $record->rmsid,
+                            'status'=> 'Pending',
+                        ]);
+                        
+                        $uuid = Uuid::uuid4()->toString();
+                        $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
+                        $uuid = 'log-' . substr($uuid, 0, 12) . '-' . $microseconds;
+                        $log=Log::create([
+                            'id' => $uuid,
+                            'docId' => $record->rmsid,
+                            'transaction' => 'Forwarded',
+                            'sender' => Auth::user()->id,
+                            'receiver' => $data['User'],
+                        ]);
+                        $record->holder=null;
+                        $record->save();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
