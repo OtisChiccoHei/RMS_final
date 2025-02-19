@@ -34,9 +34,9 @@ class CreateUser extends CreateRecord
           //  $notification = new VerifyEmail();
           //  $notification->url = Filament::getVerifyEmailUrl($user);
 
-            $settings->loadMailSettingsToConfig();
+           // $settings->loadMailSettingsToConfig();
 
-            $user->notify($notification);
+           // $user->notify($notification);
 
 
             Notification::make()

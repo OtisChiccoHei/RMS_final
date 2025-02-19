@@ -9,6 +9,7 @@ use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
@@ -98,17 +99,28 @@ class UserResource extends Resource
                         Forms\Components\Tabs\Tab::make('Details')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Forms\Components\TextInput::make('username')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live()
-                                    ->rules(function ($record) {
-                                        $userId = $record?->id;
-                                        return $userId
-                                            ? ['unique:users,username,' . $userId]
-                                            : ['unique:users,username'];
-                                    }),
-
+                                    Section::make()
+                                    ->columns(1)
+                                    ->schema([
+                                        Select::make('division')
+                                            ->label('Select Division')
+                                            ->options([
+                                                'PM' => 'PMTSSD',
+                                                'OD' => 'Office of the Directior',
+                                                'PP' => 'PPDD',
+                                                'LS' => 'LSRAD',
+                                            ])
+                                     ]),
+                                     Forms\Components\TextInput::make('username')
+                                     ->required()
+                                     ->maxLength(255)
+                                     ->live()
+                                     ->rules(function ($record) {
+                                         $userId = $record?->id;
+                                         return $userId
+                                             ? ['unique:users,username,' . $userId]
+                                             : ['unique:users,username'];
+                                     }),
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->required()
@@ -168,9 +180,6 @@ class UserResource extends Resource
                     ->badge(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')->label('Verified at')
-                    ->dateTime()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
