@@ -74,22 +74,21 @@ class ForwardResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->color('white'),
                 Tables\Actions\DeleteAction::make(),
 
                 Action::make('Receive')
-                    ->form([
-                        Forms\Components\TextInput::make('receiver')
-                            ->required()
-                            ->label('Receiver'),
-                    ])
-                    ->action(function (array $data, Forward $record) {
-                        $record->update([
-                            'receiver' => $data['receiver'],
-                            'status' => 'Received',
-                        ]);
+                    ->color('white')
+                    ->action(function ($record, $data) {
+                        $record->update(['status' => 'Received']);
                     })
-
+                    ->form([
+                        Forms\Components\TextInput::make('status')->hidden()
+                            ->default('Received')
+                            ->disabled(),
+                    ])
+ 
                 ]);
     }
 
