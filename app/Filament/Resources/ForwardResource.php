@@ -79,12 +79,18 @@ class ForwardResource extends Resource
 
                 Action::make('Receive')
                     ->form([
-                        Action::make('Receive')
-                        ->form([
-
-                        ])
+                        Forms\Components\TextInput::make('receiver')
+                            ->required()
+                            ->label('Receiver'),
                     ])
-            ]);
+                    ->action(function (array $data, Forward $record) {
+                        $record->update([
+                            'receiver' => $data['receiver'],
+                            'status' => 'Received',
+                        ]);
+                    })
+
+                ]);
     }
 
     public static function getPages(): array

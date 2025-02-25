@@ -67,9 +67,6 @@ class LogResource extends Resource
                         }
                     )
                     ->label('Received by'),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable()
-                    ->label('Status'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -83,14 +80,12 @@ class LogResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
-                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

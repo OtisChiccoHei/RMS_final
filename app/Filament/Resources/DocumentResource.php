@@ -111,7 +111,12 @@ class DocumentResource extends Resource
                     ->label('Current Holder')
                     ->formatStateUsing(
                         function(?string $state){
-                            return Forward::where('id', $state)->value('receiver');
+                            $forward = Forward::where('id', $state)->latest()->first();
+                            if ($forward) {
+                                $user = User::find($forward->receiver);
+                                return $user ? $user->firstname . ' ' . $user->lastname : null;
+                            }
+                            return null;
                         }
                     )
                     ->searchable(),

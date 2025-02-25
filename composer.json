@@ -35,6 +35,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
         "league/commonmark": "^2.4",
+        "okeonline/filament-archivable": "^1.2",
         "opcodesio/log-viewer": "^3.11",
         "ramsey/uuid": "^4.7",
         "riodwanto/filament-ace-editor": "^1.0",
