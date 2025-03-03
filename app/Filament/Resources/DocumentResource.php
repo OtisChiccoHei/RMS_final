@@ -22,6 +22,8 @@ use Filament\Tables\Actions\Action;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Illuminate\Support\Facades\Auth;
+use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
+
 
 
 class DocumentResource extends Resource

@@ -7,6 +7,7 @@ use App\Filament\Resources\ForwardResource\RelationManagers;
 use App\Models\Forward;
 use App\Models\User;
 use Filament\Forms;
+use App\Models\Log;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -15,6 +16,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -43,7 +47,7 @@ class ForwardResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')
+                    Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -74,21 +78,39 @@ class ForwardResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->color('white'),
-                Tables\Actions\DeleteAction::make(),
-
-                Action::make('Receive')
-                    ->color('white')
-                    ->action(function ($record, $data) {
-                        $record->update(['status' => 'Received']);
+                Action::make('Receive Document')
+                    ->requiresConfirmation()
+                    ->modalHeading('Confirm Receipt')
+                    ->modalDescription('Are you sure you want to receive this document?')
+                    ->modalSubmitActionLabel('Yes, Receive') // Customize submit button label
+                    ->action(function (Forward $record): void {
+                        $uuid = Uuid::uuid4()->toString();
+                        $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
+                        $uuid = 'sent-' . substr($uuid, 0, 12) . '-' . $microseconds;
+            
+                        $temp = Forward::create([
+                            'id' => $uuid,
+                            'sender' => $record->holder, // Use the current holder as the sender
+                            'receiver' => Auth::user()->id, // Set the receiver to the current user
+                            'documentId' => $record->rmsid,
+                            'status' => 'Received',
+                        ]);
+            
+                        $uuid = Uuid::uuid4()->toString();
+                        $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
+                        $uuid = 'log-' . substr($uuid, 0, 12) . '-' . $microseconds;
+            
+                        $log = Log::create([
+                            'id' => $uuid,
+                            'docId' => $record->rmsid,
+                            'transaction' => 'Received',
+                            'sender' => $record->holder, // Use the current holder as the sender
+                            'receiver' => Auth::user()->id, // Set the receiver to the current user
+                        ]);
+            
+                        $record->holder = null;
+                        $record->save();
                     })
-                    ->form([
-                        Forms\Components\TextInput::make('status')->hidden()
-                            ->default('Received')
-                            ->disabled(),
-                    ])
- 
                 ]);
     }
 
