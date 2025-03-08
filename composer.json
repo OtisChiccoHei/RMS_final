@@ -24,6 +24,7 @@
         "bezhansalleh/filament-shield": "^3.2",
         "codeat3/blade-fluentui-system-icons": "^1.32",
         "datlechin/filament-menu-builder": "^0.5.2",
+        "diogogpinto/filament-auth-ui-enhancer": "^1.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",
@@ -43,7 +44,7 @@
         "ramsey/uuid": "^4.7",
         "riodwanto/filament-ace-editor": "^1.0",
         "stichoza/google-translate-php": "^5.2",
-        "tomatophp/filament-media-manager": "^1.1",
+        "tomatophp/filament-media-manager": "1.1",
         "z3d0x/filament-logger": "^0.7.2"
     },
     "require-dev": {

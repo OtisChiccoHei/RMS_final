@@ -63,7 +63,7 @@ class MediaPolicy
      */
     public function forceDelete(User $user, Media $media): bool
     {
-        return $user->can('force_delete_media');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class MediaPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_media');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class MediaPolicy
      */
     public function restore(User $user, Media $media): bool
     {
-        return $user->can('restore_media');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class MediaPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_media');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class MediaPolicy
      */
     public function replicate(User $user, Media $media): bool
     {
-        return $user->can('replicate_media');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class MediaPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_media');
+        return $user->can('{{ Reorder }}');
     }
 }

@@ -94,33 +94,19 @@ class UserResource extends Resource
                     ])
                     ->columnSpan(1),
 
-                Forms\Components\Tabs::make()
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Tabs\Tab::make('Details')
-                            ->icon('heroicon-o-information-circle')
+                        Section::make()
                             ->schema([
-                                    Section::make()
-                                    ->columns(1)
-                                    ->schema([
-                                        Select::make('division')
-                                            ->label('Select Division')
-                                            ->options([
-                                                'PM' => 'PMTSSD',
-                                                'OD' => 'Office of the Directior',
-                                                'PP' => 'PPDD',
-                                                'LS' => 'LSRAD',
-                                            ])
-                                     ]),
-                                     Forms\Components\TextInput::make('username')
-                                     ->required()
-                                     ->maxLength(255)
-                                     ->live()
-                                     ->rules(function ($record) {
-                                         $userId = $record?->id;
-                                         return $userId
-                                             ? ['unique:users,username,' . $userId]
-                                             : ['unique:users,username'];
-                                     }),
+                                Select::make('division')
+                                    ->label('Select Division')
+                                    ->native(false)
+                                    ->options([
+                                        'OD' => 'Office of the Directior',
+                                        'PM' => 'PMTSSD',
+                                        'PP' => 'PPDD',
+                                        'LS' => 'LSRAD',
+                                    ]),
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->required()
@@ -139,27 +125,37 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('lastname')
                                     ->required()
                                     ->maxLength(255),
-                            ])
-                            ->columns(2),
+                            ]),
+                        
+                            
 
-                        Forms\Components\Tabs\Tab::make('Roles')
-                            ->icon('fluentui-shield-task-48')
-                            ->schema([
-                                Select::make('roles')
-                                    ->hiddenLabel()
-                                    ->relationship('roles', 'name')
-                                    ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable()
-                                    ->optionsLimit(5)
-                                    ->columnSpanFull(),
-                            ])
+
                     ])
                     ->columnSpan([
                         'sm' => 1,
                         'lg' => 2
                     ]),
+                Forms\Components\Group::make()
+                    ->schema([
+                        Section::make('Select Role')
+                            ->description('')
+                            ->schema([
+                                Select::make('roles')
+                                    ->required()
+                                    ->hiddenLabel()
+                                    ->relationship('roles', 'name')
+                                    ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
+                                    // ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->optionsLimit(5)
+                                    ->columnSpanFull(),
+                            ])
+                        
+                            
+                    ])
+                    ,
+                
             ])
             ->columns(3);
     }

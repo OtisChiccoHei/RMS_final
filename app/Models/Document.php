@@ -34,6 +34,7 @@ class Document extends Model
      public $incrementing = true;
     
     protected $fillable = [
+        'id',
         'rmsid',
         'subject',
         'status',
@@ -41,7 +42,8 @@ class Document extends Model
         'initialDraft',
         'finalDraft',
         'signedCopy',
-        'holder',
+        'holder_user',
+        'holder_division',
         'description',
     ];    
 }

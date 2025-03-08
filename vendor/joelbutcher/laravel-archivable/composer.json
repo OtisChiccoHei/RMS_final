@@ -1,0 +1,55 @@
+{
+    "name": "joelbutcher/laravel-archivable",
+    "description": "An archivable trait package for Laravel Eloquent models",
+    "keywords": [
+        "laravel",
+        "laravel-archivable"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/joelbutcher/laravel-archivable",
+    "type": "library",
+    "support": {
+        "issues": "https://github.com/joelbutcher/laravel-archivable/issues",
+        "source": "https://github.com/joelbutcher/laravel-archivable"
+    },
+    "authors": [
+        {
+            "name": "Joel Butcher",
+            "email": "joel@joelbutcher.co.uk"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "illuminate/support": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/database": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "illuminate/pagination": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+        "orchestra/testbench": "^6.3|^7.0|^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^8.4|^9.1|^10.5|^11.5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelArchivable\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaravelArchivable\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelArchivable\\LaravelArchivableServiceProvider"
+            ]
+        }
+    }
+}

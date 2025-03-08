@@ -17,25 +17,25 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasMedia
 {
     use InteractsWithMedia;
-    use HasUuids, HasRoles;
+    use HasUuids;
+    use HasRoles;
+    use HasPanelShield;
     use HasApiTokens, HasFactory, Notifiable;
 
 
     protected $fillable = [
+        'id',
         'username',
+        'division',
         'email',
         'firstname',
         'lastname',
         'password',
-        'division',
-        'PM',
-        'LS',
-        'PP',
-        'OD',
     ];
 
     /**

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->id('id');
+            $table->uuid('id')->primary();
             $table->timestamps();
             $table->string('subject')->nullable();            
             $table->string('status')->nullable();
@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('initialDraft')->nullable();
             $table->string('finalDraft')->nullable();
             $table->string('signedCopy')->nullable();
-            $table->string('holder')->nullable();
+            $table->string('holder_user')->nullable();
+            $table->string('holder_division')->nullable();
             $table->string('description')->nullable();
         });
     }

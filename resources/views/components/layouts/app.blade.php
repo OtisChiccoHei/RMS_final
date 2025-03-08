@@ -26,5 +26,6 @@
 
         @filamentScripts
         @vite('resources/js/app.js')
+        <x-filament-actions::modals />
     </body>
 </html>

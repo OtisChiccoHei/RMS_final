@@ -1,0 +1,89 @@
+{
+    "name": "okeonline/filament-archivable",
+    "description": "A filament plugin to use archivable models",
+    "keywords": [
+        "OKE Online",
+        "laravel",
+        "filament-archivable",
+        "laravel",
+        "filament",
+        "filamentphp",
+        "laravel-eloquent",
+        "eloquent",
+        "filament-plugins"
+    ],
+    "homepage": "https://github.com/okeonline/filament-archivable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rudi van Zandwijk",
+            "email": "rudi.vanzandwijk@okeonline.nl",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "filament/filament": "^3.2",
+        "illuminate/support": "^11.0",
+        "illuminate/database": "^11.0",
+        "illuminate/contracts": "^10.0||^11.0",
+        "joelbutcher/laravel-archivable": "^1.4",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "filament/tables": "^3.2.57",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "orchestra/testbench": "^9.0.0||^8.22.0",
+        "pestphp/pest": "^2.34",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-laravel": "^2.3",
+        "pestphp/pest-plugin-livewire": "^2.1",
+        "pestphp/pest-plugin-watch": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Okeonline\\FilamentArchivable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Okeonline\\FilamentArchivable\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "clear": "@php vendor/bin/testbench package:purge-filament-archivable --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": [
+            "@composer run prepare",
+            "@php vendor/bin/testbench workbench:build --ansi"
+        ],
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer run build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Okeonline\\FilamentArchivable\\FilamentArchivableServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

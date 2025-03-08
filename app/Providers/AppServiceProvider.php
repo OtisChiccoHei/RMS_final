@@ -8,6 +8,11 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
+use App\Models\User;
+use App\Observers\UserObserver;
+use App\Models\Document;
+use App\Observers\DocumentObserver;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,5 +53,11 @@ class AppServiceProvider extends ServiceProvider
             PanelsRenderHook::USER_MENU_BEFORE,
             fn (): View => view('filament.components.button-website'),
         );
+        User::observe(UserObserver::class);
+        Document::observe(DocumentObserver::class);
+        Gate::policy(\App\Models\Document::class, \App\Policies\DocumentPolicy::class);
+        Gate::policy(\App\Models\Forward::class, \App\Policies\ForwardPolicy::class);
+        Gate::policy(\App\Models\Log::class, \App\Policies\LogPolicy::class);
+
     }
 }

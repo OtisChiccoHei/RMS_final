@@ -23,6 +23,26 @@ return [
         'intercept_gate' => 'before', // after
     ],
 
+    'records' => [
+        'enabled' => true,
+        'name' => 'records',
+    ],
+
+    'division_record' => [
+        'enabled' => true,
+        'name' => 'division_record',
+    ],
+
+    'division_chief' => [
+        'enabled' => true,
+        'name' => 'division_chief',
+    ],
+
+    'employee' => [
+        'enabled' => true,
+        'name' => 'employee',
+    ],
+
     'panel_user' => [
         'enabled' => false,
         'name' => 'panel_user',
@@ -34,14 +54,8 @@ return [
             'view_any',
             'create',
             'update',
-            'restore',
-            'restore_any',
-            'replicate',
-            'reorder',
             'delete',
             'delete_any',
-            'force_delete',
-            'force_delete_any',
         ],
 
         'page' => 'page',

@@ -15,16 +15,6 @@ class DocumentObserver
      */
     public function created(Document $document): void
     {
-        $meow=Auth::user()->division;
-        $uuid = Uuid::uuid4()->toString();
-        $uuid = $meow . '-'. date("Y") . '-' . str_pad($document->id, 5, '0', STR_PAD_LEFT);
-        $document->status = 'Active';
-        $document->holder = Auth::user()->id;
-        $document->rmsid = $uuid;
-        
-        $document->save();
-
-        
         $uuid = Uuid::uuid4()->toString();
         $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
         $uuid = 'log-' . substr($uuid, 0, 12) . '-' . $microseconds;
@@ -38,7 +28,13 @@ class DocumentObserver
     }
     public function creating(Document $document): void
     {
-        //
+        $meow=Auth::user()->division;
+        $uuid = Uuid::uuid4()->toString();
+        $uuid = $meow . '-'. date("Y") . '-' . str_pad($document->id, 5, '0', STR_PAD_LEFT);
+        $document->status = 'Active';
+        $document->holder_user = Auth::user()->id;
+        $document->holder_division = Auth::user()->division;
+        $document->id = $uuid;
     }
     /**
      * Handle the Document "updated" event.

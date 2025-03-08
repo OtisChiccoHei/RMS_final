@@ -36,7 +36,7 @@ class ListUsers extends ListRecords
         $tabs = [
             null => Tab::make('All'),
             'admin' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'admin')),
-            'author' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author')),
+            'user' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'user')),
         ];
 
         if ($user->isSuperAdmin()) {

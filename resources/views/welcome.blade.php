@@ -151,7 +151,7 @@
                 <h1 style="color: white;">Records Management System</h1>
                 <p></p>
                 <div class="hero-buttons">
-                    <a href="http://127.0.0.1:8000/admin" target="_blank"> <button class="primary-button">Sign in</button></a>
+                    <a href="http://127.0.0.1:8000/rms-admin"> <button class="primary-button">Sign in</button></a>
                     <a href="https://bwc.dole.gov.ph" target="_blank"> <button class="secondary-button">BWC Website</button></a>
                 </div>
             </div>

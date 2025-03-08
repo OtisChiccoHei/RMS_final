@@ -26,7 +26,11 @@ class ForwardResource extends Resource
 {
     protected static ?string $model = Forward::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+
+    protected static ?string $modelLabel = 'Incoming Documents';
+
+    protected static ?string $navigationLabel = 'Incoming Documents';
 
     public static function form(Form $form): Form
     {

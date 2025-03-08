@@ -24,7 +24,8 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use Filament\Support\Colors\Color;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -32,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('rms-admin')
             ->login(Login::class)
             ->passwordReset(RequestPasswordReset::class)
             ->emailVerification(EmailVerification::class)
@@ -94,6 +95,14 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
+                AuthUIEnhancerPlugin::make()
+                    ->formPanelPosition('right')
+                    ->mobileFormPanelPosition('top')
+                    ->formPanelWidth('35%')
+                    ->emptyPanelBackgroundImageUrl(asset('images/loginbg.png'))
+                    ->formPanelBackgroundColor(Color::hex('#d0bbfd'))
+                    ->emptyPanelBackgroundImageOpacity('80%')
+                    ->emptyPanelBackgroundColor(Color::hex('#5000ff')),
                 \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()
                     ->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),
