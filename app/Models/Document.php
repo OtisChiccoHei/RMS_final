@@ -35,7 +35,7 @@ class Document extends Model
     
     protected $fillable = [
         'id',
-        'rmsid',
+        'rms_id',
         'subject',
         'status',
         'docType',
@@ -45,5 +45,11 @@ class Document extends Model
         'holder_user',
         'holder_division',
         'description',
-    ];    
+        'forward_id',
+        'actionTaken',
+    ];
+    
+    protected $casts = [
+        'actionTaken' => 'json',
+    ];
 }

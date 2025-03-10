@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .fi-simple-page.grid.fi-simple-header.fi-logo{
+        height: 13rem;
+        width: 15rem;
+    }
+</style>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">

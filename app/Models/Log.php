@@ -33,8 +33,14 @@ class Log extends Model
     protected $fillable = [
         'id',
         'docId',
+        'doc_name', 
+        'doc_description',
+        'doc_type',              
+        'user',
+        'user_division',
         'transaction',
-        'sender',
-        'receiver',
+        'recipient',
+        'recipient_division',
+        'actionTaken',
     ];    
 }

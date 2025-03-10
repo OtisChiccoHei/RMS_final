@@ -12,11 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('forwards', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->timestamps();
-            $table->string('sender')->nullable();
             $table->string('documentId')->nullable();
+            $table->string('document_name')->nullable();
+            $table->string('document_description')->nullable();
+            $table->string('document_type')->nullable();
+            $table->string('sender')->nullable();
+            $table->string('sender_division')->nullable();
+            $table->string('remarks')->nullable();
             $table->string('receiver')->nullable();
+            $table->string('receiver_division')->nullable();
+            $table->string('receiver_divisionTemp')->nullable();
             $table->string('status')->nullable();
         });
     }

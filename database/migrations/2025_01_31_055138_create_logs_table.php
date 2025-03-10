@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
-            $table->string('docId')->nullable();            
+            $table->string('docId')->nullable();
+            $table->string('doc_name')->nullable(); 
+            $table->string('doc_description')->nullable();
+            $table->string('doc_type')->nullable();
+            $table->string('user')->nullable();
+            $table->string('user_division')->nullable();
             $table->string('transaction')->nullable();
-            $table->string('sender')->nullable();
-            $table->string('receiver')->nullable();
-            $table->string('holder')->nullable();
+            $table->string('recipient')->nullable();
+            $table->string('recipient_division')->nullable();
+            $table->string('actionTaken')->nullable();
 
         });
     }

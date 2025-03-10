@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 
 class LogResource extends Resource
@@ -47,6 +48,7 @@ class LogResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Log::query()->where('user', Auth::user()->id))
             ->columns([
 
                 Tables\Columns\TextColumn::make('docId')
@@ -55,22 +57,14 @@ class LogResource extends Resource
                 Tables\Columns\TextColumn::make('transaction')
                     ->searchable()
                     ->label('Transaction Type'),
-                Tables\Columns\TextColumn::make('sender')
+                Tables\Columns\TextColumn::make('recipient')
                     ->searchable()
-                    ->label('Sent by')
+                    ->label('Recipient')
                     ->formatStateUsing(
                         function(?string $state){
                             return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
                         }
                     ),
-                Tables\Columns\TextColumn::make('receiver')
-                    ->searchable()
-                    ->formatStateUsing(
-                        function(?string $state){
-                            return User::where('id', $state)->value('firstname') . ' ' . User::where('id', $state)->value('lastname');
-                        }
-                    )
-                    ->label('Received by'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

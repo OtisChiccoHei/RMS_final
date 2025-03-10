@@ -31,11 +31,17 @@ class Forward extends Model
      protected $keyType = 'string';
      
     protected $fillable = [
-        'rmsid',
         'id',
-        'sender',
-        'receiver',
         'documentId',
+        'document_name',
+        'document_description',
+        'document_type',
+        'sender',
+        'sender_division',
+        'remarks',
+        'receiver',
+        'receiver_division',
+        'receiver_divisionTemp',
         'status',
     ];
 }
