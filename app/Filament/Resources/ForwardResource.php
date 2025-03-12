@@ -164,18 +164,18 @@ class ForwardResource extends Resource
                             'recipient_division' => 'N/A',
                         ]);
                         if($record->receiver_divisionTemp){
-                            $record->status = 'Received - From Internal';
+                            $record->status = 'Received - Internal';
                             $temp = $record->receiver_division;
                             $record->receiver_division = $record->receiver_divisionTemp;
                             $record->receiver_divisionTemp = $temp;
 
-                            $document->status = 'Received - From Internal';
+                            $document->status = 'Received - Internal';
                             $document->save();
 
-                            $log->transaction = 'Received - From Internal';
+                            $log->transaction = 'Received - Internal';
                             $log->save();
                         }else{
-                            $record->status = 'Received - From Internal';
+                            $record->status = 'Received - Internal';
                         }
                         
                         $record->save();

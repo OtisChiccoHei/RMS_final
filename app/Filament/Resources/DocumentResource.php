@@ -112,22 +112,32 @@ class DocumentResource extends Resource
             ->deferLoading()
             ->query(function(){
                 if((Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('records')) && session()->get('doc_view') == 'all'){
-                    return Document::query()->where('created_at', '!=', null);
+                    return Document::query()
+                                ->where('created_at', '!=', null);
 
                 }elseif(Auth::user()->hasRole('super_admin') && session()->get('doc_view') == 'mine'){
-                    return Document::query()->where('holder_user',  Auth::user()->id);
+                    return Document::query()
+                                ->where('holder_user',  Auth::user()->id);
 
                 }elseif(Auth::user()->hasRole('records') && session()->get('doc_view') == 'mine'){
-                    return Document::query()->where('holder_division',  Auth::user()->division);
+                    return Document::query()
+                                ->where('holder_division',  Auth::user()->division);
 
                 }elseif(Auth::user()->hasRole('division_record')){
-                    return Document::query()->where('holder_division', Auth::user()->division)->where('status', 'Received - Division')->orWhere('status', 'Received - From Internal');
+                    return Document::query()
+                                ->where('holder_division', Auth::user()->division)
+                                ->where(function ($query) {
+                                    $query->where('status', 'Received - Division')
+                                        ->orWhere('status', 'Received - Internal');
+                                });
 
                 }elseif(Auth::user()->hasRole('employee') || Auth::user()->hasRole('division_chief')){
-                    return Document::query()->where('holder_user', Auth::user()->id);
+                    return Document::query()
+                                ->where('holder_user', Auth::user()->id);
 
                 }else{
-                    return Document::query()->where('created_at', null);
+                    return Document::query()
+                                ->where('created_at', null);
                 }
             })
             ->columns([
@@ -254,6 +264,7 @@ class DocumentResource extends Resource
                                                 ->maxLength(500)
                                                 ->required(),
                                         ])
+                                        ->deletable(false)
                                         ->addable(false)
                                         ->columns(1)
                                 ]),
@@ -276,6 +287,7 @@ class DocumentResource extends Resource
                         })
                         ->color('success')
                         ->modalSubmitActionLabel('Forward')
+                        // ->fillform()
                         ->form([
                             Section::make('Recipient')
                                 ->schema([
@@ -296,7 +308,6 @@ class DocumentResource extends Resource
                                             if (!$get('division')) {
                                                 return []; // Return an empty array if division is not selected
                                             }
-                                    
                                             return User::query()
                                                 ->where('division', $get('division'))
                                                 ->get()
@@ -316,7 +327,6 @@ class DocumentResource extends Resource
                             
                         ])
                         ->action(function (array $data, Document $record): void {
-                            // dd($record);
                             $uuid = Uuid::uuid4()->toString();
                             $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
                             $uuidFw = 'sent-' . substr($uuid, 0, 12) . '-' . $microseconds;
@@ -373,7 +383,7 @@ class DocumentResource extends Resource
                                 return true;
                             }
                         })
-                        ->action(function(Document $record){
+                        ->action(function(Document $record): void {
                             $forward = Forward::query()->where('id', $record->forward_id)->first();
                             $forward->status = 'Released';
                             $forward->save();
@@ -428,7 +438,7 @@ class DocumentResource extends Resource
                                 })
                                 ->required(),
                         ])
-                        ->action(function(Document $record){
+                        ->action(function(Document $record): void {
                             $forward = Forward::query()->where('id', $record->forward_id)->first();
                             $forward->receiver = $data['user'];
                             $forward->save();
@@ -550,10 +560,11 @@ class DocumentResource extends Resource
                                                             
                                 ]),
                         ])
-                        ->action(function(Document $record){
-                            $record->initialDraft = $data['initialDraft'];
-                            $record->finalDraft = $data['finalDraft'];
-                            $record->signedCopy = $data['signedCopy'];
+                        ->action(function(array $data, Document $record): void {
+                            // dd($data);
+                            $record->initialDraft = isset($data['initialDraft']) ? $data['initialDraft'] : null;
+                            $record->finalDraft = isset($data['finalDraft']) ? $data['finalDraft'] : null;
+                            $record->signedCopy = isset($data['signedCopy']) ? $data['signedCopy'] : null;
                             $record->save();
 
                             $uuid = Uuid::uuid4()->toString();
@@ -574,7 +585,7 @@ class DocumentResource extends Resource
                         }),
                     Tables\Actions\Action::make('forward_emp')
                         ->icon('heroicon-o-chevron-double-right')
-                        ->label('Route Document')
+                        ->label('Route the Document')
                         ->hidden(function(Document $record){
                             if(Auth::user()->hasRole('employee') || Auth::user()->hasRole('division_chief')){
                                 return false;
@@ -685,58 +696,162 @@ class DocumentResource extends Resource
                     Tables\Actions\Action::make('route_toDiv')
                         ->icon('heroicon-o-forward')
                         ->label('Route Document')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->modalIcon('heroicon-o-forward')
-                        ->modalIconColor('primary')
-                        ->modalHeading('Route Document')
-                        ->modalDescription('Are you sure you\'d like to Route this document to the recipient?')
-                        ->modalSubmitActionLabel('Affirmative')
-                        ->hidden(function($record){
-                            // if(Auth::user()->hasRole('division_record') && $record->status == 'Received - From Internal'){
-                            //     return false;
-                            // }else{
-                            //     return true;
-                            // }
+                        ->disabledForm()
+                        ->color('success')
+                        ->modalSubmitActionLabel('Route')
+                        ->fillform(function (Document $record): array {
                             $forward = Forward::query()->where('id', $record->forward_id)->first();
-                            // dd($forward->receiver_divisionTemp != null);
-                            if($forward->receiver_divisionTemp != null && Auth::user()->hasRole('division_record')){
-                                return false;
-                            }
-                            return true;
+                            $user = User::where('id', $forward->sender)->first();
+                            $sender = $user->firstname. ' ' .$user->lastname;
+                            $user = User::where('id', $forward->receiver)->first();
+                            $receiver = $user->firstname. ' ' .$user->lastname;
+                            return [
+                                'subject' => $record->subject,
+                                'docType' => $record->docType,
+                                'description' => $record->description,
+                                'initialDraft' => $record->initialDraft,
+                                'finalDraft' => $record->finalDraft,
+                                'signedCopy' => $record->signedCopy,
+                                'actionTaken' => $record->actionTaken,
+                                'sender' => $sender,
+                                'sender_division' => $forward->sender_division,
+                                'remarks' => $forward->remarks,
+                                'receiver' => $receiver,
+                                'receiver_divisionTemp' => $forward->receiver_division,
+                            ];
                         })
-                        // ->action(function(Document $record){
-                        //     Notification::make()
-                        //         ->title('Working')
-                        //         ->icon('heroicon-o-document-text')
-                        //         ->iconColor('success')
-                        //         ->send();
-                        //     // $forward = Forward::query()->where('id', $record->forward_id)->first();
-                        //     // $forward->status = 'Forwarded';
-                        //     // $forward->receiver_division = $forward->receiver_divisionTemp;
-                        //     // $forward->receiver_divisionTemp = NULL;
-                        //     // $forward->save();
+                        ->form([
+                            Section::make('Document Details')
+                                ->schema([
+                                    Section::make()
+                                        ->columns(2)
+                                        ->schema([
+                                            Forms\Components\TextInput::make('subject')
+                                                ->label('Subject')
+                                                ->maxLength(255),
+                                            Forms\Components\TextInput::make('docType')
+                                                ->label('Document Type')
+                                                ->maxLength(255),
+                                            Forms\Components\Textarea::make('description')
+                                                ->label('Description')
+                                                ->columnSpan(2),
+                                        ]),
+                                    Section::make()
+                                        ->columns(2)
+                                        ->schema([                  
+                                            Forms\Components\FileUpload::make('initialDraft')
+                                                ->downloadable()
+                                                ->openable()
+                                                ->hidden(function($state){
+                                                    if($state){
+                                                        return false;
+                                                    }
+                                                    else {
+                                                        return true;
+                                                    }
+                                                })
+                                                ->required()
+                                                ->label('Initial Draft'),
+                                            Forms\Components\FileUpload::make('finalDraft')
+                                                ->downloadable()
+                                                ->openable()
+                                                ->hidden(function($state){
+                                                    if($state){
+                                                        return false;
+                                                    }
+                                                    else {
+                                                        return true;
+                                                    }
+                                                })
+                                                ->required()
+                                                ->label('Final Draft'),
+                                            Forms\Components\FileUpload::make('signedCopy')
+                                                ->downloadable()
+                                                ->openable()
+                                                ->hidden(function($state){
+                                                    if($state){
+                                                        return false;
+                                                    }
+                                                    else {
+                                                        return true;
+                                                    }
+                                                })
+                                                ->required()
+                                                ->label('Signed Copy'),                        
+                                        ]),
+                                    Section::make()
+                                        ->schema([
+                                            Repeater::make('actionTaken')
+                                                ->schema([
+                                                    Textarea::make('taken_action')
+                                                        ->label(' ')
+                                                        ->maxLength(500)
+                                                        ->required(),
+                                                ])
+                                                ->addable(false)
+                                                ->columns(1)
+                                        ]),
+                            ]),
+                            Section::make('Sender')
+                                ->schema([
+                                    TextInput::make('sender')
+                                        ->label('Sender')
+                                        ->readOnly(),
+                                    Textarea::make('remarks')
+                                        ->label('Remarks')
+                                        ->readOnly(),
+                                ])
+                                ->columns(2),
+                            Section::make('Receiver')
+                                ->schema([
+                                    TextInput::make('receiver')
+                                        ->label('Receiver')
+                                        ->readOnly(),
+                                    TextInput::make('receiver_divisionTemp')
+                                        ->label('Division')
+                                        ->readOnly(),
+                                ])
+                                ->columns(2),
+                        ])
+                        ->hidden(function($record){
+                            $res = (Auth::user()->hasRole('division_record') && $record->status == 'Received - Internal');
+                            if($res){
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })
+                        ->action(function(Document $record): void {
+                            Notification::make()
+                                ->title('Working')
+                                ->icon('heroicon-o-document-text')
+                                ->iconColor('success')
+                                ->send();
+                            $forward = Forward::query()->where('id', $record->forward_id)->first();
+                            $forward->status = 'Forwarded';
+                            $forward->receiver_divisionTemp = NULL;
+                            $forward->save();
                             
-                        //     // $uuid = Uuid::uuid4()->toString();
-                        //     // $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
-                        //     // $uuid = 'log-' . substr($uuid, 0, 12) . '-' . $microseconds;
-                        //     // $log=Log::create([
-                        //     //     'id' => $uuid,
-                        //     //     'docId' => $record->rms_id,
-                        //     //     'doc_name' => $record->subject,
-                        //     //     'doc_description' => $record->description,
-                        //     //     'doc_type' => $record->docType,
-                        //     //     'user' => Auth::user()->id,
-                        //     //     'user_division' => Auth::user()->division,
-                        //     //     'transaction' => 'Forwarded',
-                        //     //     'recipient' => $forward->receiver,
-                        //     //     'recipient_division' => $forward->receiver_division,
-                        //     // ]);
-                        //     // $record->holder_user = null;
-                        //     // $record->holder_division = null;
-                        //     // $record->status = 'Forwarded';
-                        //     // $record->save();
-                        // }),
+                            $uuid = Uuid::uuid4()->toString();
+                            $microseconds = substr(explode('.', microtime(true))[1], 0, 6);
+                            $uuid = 'log-' . substr($uuid, 0, 12) . '-' . $microseconds;
+                            $log=Log::create([
+                                'id' => $uuid,
+                                'docId' => $record->rms_id,
+                                'doc_name' => $record->subject,
+                                'doc_description' => $record->description,
+                                'doc_type' => $record->docType,
+                                'user' => Auth::user()->id,
+                                'user_division' => Auth::user()->division,
+                                'transaction' => 'Forwarded',
+                                'recipient' => $forward->receiver,
+                                'recipient_division' => $forward->receiver_division,
+                            ]);
+                            $record->holder_user = null;
+                            $record->holder_division = null;
+                            $record->status = 'Forwarded';
+                            $record->save();
+                        }),
                 ])->dropdown(),
 
                 
